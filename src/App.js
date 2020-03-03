@@ -3,13 +3,13 @@ import './App.css';
 
 
 const App = () => {
-  const notesData = JSON.parse(localStorage.getItem('notes'))
-  const [notes,setNotes] = useState(notesData || []); 
+  
+  const [notes,setNotes] = useState([]); 
   const [title,setTitle] = useState("");
   const [body,setBody] = useState ('');
 
   const addNote = (e) => {
-    //e.preventDefault();
+    e.preventDefault();
     setNotes([
       ...notes,
       {title,body}
@@ -21,9 +21,16 @@ const App = () => {
     setNotes(notes.filter((note)=> note.title !== title))
   }
 
+useEffect (()=> {
+  const notesData = JSON.parse(localStorage.getItem('notes'))
+if (notesData){
+setNotes(notesData)
+}
+}, []);
+
   useEffect(() => {
     localStorage.setItem('notes',JSON.stringify(notes))
-  })
+  },[notes])
   return (
     <div>
       <h1>Notes</h1>

@@ -1,19 +1,52 @@
-import React ,{ useState} from 'react';
+import React ,{ useState ,useEffect} from 'react';
 import './App.css';
 
-const App = () => {
-  const [count,setCount] = useState(0)
 
- 
+const App = () => {
+  const notesData = JSON.parse(localStorage.getItem('notes'))
+  const [notes,setNotes] = useState(notesData || []); 
+  const [title,setTitle] = useState("");
+  const [body,setBody] = useState ('');
+
+  const addNote = (e) => {
+    //e.preventDefault();
+    setNotes([
+      ...notes,
+      {title,body}
+    ])
+    setTitle('');
+    setBody('')
+  }
+  const removeNote = (title) => {
+    setNotes(notes.filter((note)=> note.title !== title))
+  }
+
+  useEffect(() => {
+    localStorage.setItem('notes',JSON.stringify(notes))
+  })
   return (
     <div>
-      <h1>The current count is {count}</h1>
-      <button onClick = {()=> setCount(count + 1)}>+1</button>
-      <button onClick = {() => setCount(count - 1)}>-1</button>
-      <button onClick = {() => setCount(0)}>reset</button>
+      <h1>Notes</h1>
+      {notes.map((note)=>{
+        return (
+          <div>
+            <h3>{note.title}</h3>
+        <p>{note.body}</p>
+        <button onClick = {()=> removeNote(note.title)}>Delete</button>
+          </div>
+        )
+      })}
+      <p>Add note</p>
+      <form onSubmit ={addNote}>
+        <input value = {title} onChange = {(e)=> setTitle(e.target.value)}/>
+        <textarea value = {body} onChange = {(e)=> setBody(e.target.value)}></textarea>
+        <button>Submit</button>
+      </form>
     </div>
   )
 }
+
+
 export default App;
 
 
